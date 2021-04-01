@@ -6,12 +6,11 @@ public class ConnectFour{
         EMPTY,
         P1,
         P2,
-        EDGE
     }
     
     enum Turn {
         P1Turn,
-        P2Turn,
+        P2Turn
     }
     
     enum WinState {
@@ -30,22 +29,10 @@ public class ConnectFour{
         ALTERNATE_TURNS
     }
     
-    enum Directions {
-        UP,
-        UPPER_LEFT,
-        UPPER_RIGHT,
-        RIGHT,
-        LEFT,
-        DOWN,
-        LOWER_LEFT,
-        LOWER_RIGHT
-    }
-    
     public static void main(String []args){
         int numRows = 6;
         int numCols = 7;
         int latestColPicked = -1;
-        boolean keepRunning = true;
         int numPlaced = 0; //increments per successful chip placement, 42 max
         BoardState[][] board = new BoardState[numRows][numCols];
         int[] openSpaces = new int[numCols];
@@ -67,37 +54,7 @@ public class ConnectFour{
         Random rand = new Random();
         int randNum = rand.nextInt(1);
         initializeBoard(board, numRows, numCols, openSpaces);
-        /*
-        while(keepRunning)
-        {
-            switch
-            {
-                case GameState.P1Turn:
-                    break;
-                    
-                case GameState.P2Turn:
-                    break;
-                    
-                case GameState.P1Win:
-                    break;
-                    
-                case GameState.P2Win:
-                    break;
-                    
-                case GameState.TIE:
-                    break;
-                    
-                case GameState.RESET:
-                    break;
-                    
-                case GameState.MENU:
-                    break;
-                
-                default:
-                    break;
-            }
-        }
-        */
+        
         //Check if board was initialized correctly
         System.out.println("IN MAIN");
         printBoard(board, numRows, numCols);
