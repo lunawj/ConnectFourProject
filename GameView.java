@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class GameView {
     /* Main method for client side. Sets up GUI for the 
-       Connect4 game and created an instance of the controller
+       Connect4 game and creates an instance of the controller
        used to run the clients side */
     public static void main(final String[] args) {
         /* Create the JFrame, make it exit when close is pressed */
