@@ -98,13 +98,20 @@ public class GameController extends JPanel {
                         } else {
                             board[i][j].setText("P2");
                         }
-                        model.checkWinCondition();
-                        if(playerTurn == Turn.P1Turn) {
-                            playerTurn = Turn.P2Turn;
-                        } else {
-                            playerTurn = Turn.P1Turn;
+                        WinState winState = model.checkWinCondition(j);
+                        /*if(winState == winState.TIE) {
+                            System.out.println("Controller says TIE!");
+                        } else if(winState == winState.P1Win) {
+                            System.out.println("Controller says P1 WINS!");
+                        } else if(winState == winState.P2Win) {
+                            System.out.println("Controller says P2 WINS!");
+                        } else*/ {
+                            if(playerTurn == Turn.P1Turn)
+                                playerTurn = Turn.P2Turn;
+                            else
+                                playerTurn = Turn.P1Turn;
+                            model.setPlayerTurn(playerTurn);
                         }
-                        model.setPlayerTurn(playerTurn);
                     }
                 }
             }
