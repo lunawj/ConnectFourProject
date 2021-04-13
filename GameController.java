@@ -101,10 +101,16 @@ public class GameController extends JPanel {
                         WinState winState = model.checkWinCondition();
                         if(winState == winState.TIE) {
                             System.out.println("Controller says TIE!");
+                            JOptionPane.showMessageDialog(null, "The game has ended in a tie",
+                                    "No moves remaining!", JOptionPane.INFORMATION_MESSAGE);
                         } else if(winState == winState.P1Win) {
                             System.out.println("Controller says P1 WINS!");
+                            JOptionPane.showMessageDialog(null, "Player 1 has won",
+                                    "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
                         } else if(winState == winState.P2Win) {
                             System.out.println("Controller says P2 WINS!");
+                            JOptionPane.showMessageDialog(null, "Player 2 has won",
+                                    "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             if(playerTurn == Turn.P1Turn)
                                 playerTurn = Turn.P2Turn;
