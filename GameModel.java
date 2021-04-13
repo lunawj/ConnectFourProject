@@ -7,6 +7,7 @@ public class GameModel{
 
     private static final int numRows = 6;
     private static final int numCols = 7;
+    private static final int In_a_Row = 4;
 
     private int numPlaced;
     private BoardState[][] board;
@@ -63,111 +64,93 @@ public class GameModel{
         return retval;
     }
 
-    public WinState checkWinCondition(int latestCol) {
-        winState = WinState.NOWINNER;
-        boolean winner = false;
-        int numInARow = 0;
-        BoardState currentTurn = BoardState.EMPTY;
-
-        if(playerTurn == Turn.P1Turn) {
-            currentTurn = BoardState.P1;
-        } else if(playerTurn == Turn.P2Turn) {
-            currentTurn = BoardState.P2;
-        } else {
-            System.out.println("ERROR: WHOS TURN???");
+    public WinState checkWinCondition() {
+        //check if all spaces are taken
+        int tie_count = 0;
+        for (int i = 0; i < numCols; i++) {
+            if (getOpenSpaces(i) == numRows)
+                tie_count++;//checks if each column is full
         }
- 
-        /* Check Vertical */
-        for(int i=0; i<numRows; i++) {
-            if(board[i][latestCol] == currentTurn) {
-                numInARow++;
-                if(numInARow >= 4) {
-                    winner = true;
-                }
-            } else {
-                numInARow = 0;
-            }
-        }
+        if (tie_count == numCols)
+            return winState.TIE;
 
-        /* Check Horizontal */
-        if(winner != true) {
-            for(int j=0; j<numCols; j++) {
-                if(board[openSpaces[latestCol]-1][j] == currentTurn) {
-                    numInARow++;
-                    if(numInARow >= 4) {
-                        winner = true;
+        int p1Count = 0;//counter for Player 1
+        int p2Count = 0;//counter for Player 2
+        for (int r = 0; r < numRows; r++)//goes through each row and column combination
+            for (int c = 0; c < numCols; c++) {
+                //checks for a vertical win
+                if (r <= numRows - In_a_Row) {//checks if the board able to calculate a win at this height
+                    p1Count = 0;
+                    p2Count = 0;
+
+                    //this loop goes from the bottom row and up, checking for a win condition for either player
+                    for (int i = 0; i < In_a_Row; i++) {
+                        if (board[r + i][c] == BoardState.P1)
+                            p1Count++;
+                        if (board[r + i][c] == BoardState.P2)
+                            p2Count++;
                     }
-                } else {
-                    numInARow = 0;
+
+                    if (p1Count == In_a_Row)//If the 4 of P1 chips are in a row
+                        return winState.P1Win;
+                    else if (p2Count == In_a_Row)//If the 4 of P2 chips are in a row
+                        return winState.P2Win;
                 }
-            }
-        }
+                //checks for a horizontal win
+                if (c <= numCols - In_a_Row) {
+                    p1Count = 0;
+                    p2Count = 0;
 
-        /* Check upper left to lower right diagonal */
-        if(winner != true) {
-            /* in order to get the most left/up, we check to see how
-               far we can go in both direction. the min is the val we
-               will go. */
-            int val = (latestCol < (numRows - (openSpaces[latestCol]-1)))
-                       ? latestCol : (numRows - (openSpaces[latestCol]-1));
-            
-            int row = (openSpaces[latestCol]-1)+val;
-            int col = latestCol - val;
-
-            for(int i=col; (i<numCols) && (row >= 0); i++) {
-                /* TODO: ERROR ON LINE 119 when you click the furthest right column */
-                if(board[row][i] == currentTurn) {
-                    numInARow++;
-                    System.out.println("current score: " + numInARow);
-                    if(numInARow >= 4) {
-                        winner = true;
+                    //This loop checks from a win in columns, going for the right to the left
+                    for (int i = 0; i < In_a_Row; i++) {
+                        if (board[r][c + i] == BoardState.P1)
+                            p1Count++;
+                        if (board[r][c + i] == BoardState.P2)
+                            p2Count++;
                     }
-                } else {
-                    numInARow = 0;
+
+                    if (p1Count == In_a_Row)
+                        return winState.P1Win;
+                    else if (p2Count == In_a_Row)
+                        return winState.P2Win;
                 }
-                row--;
-            }
-        }
-
-        /* TODO: Out of Bounds errors here... I have to get to class though
-           and don't have time to investigate now */
-        if(winner != true) {
-            int val = ((numCols - latestCol) < (numRows - (openSpaces[latestCol]-1))) ?
-                      (numCols - latestCol) : (numRows - (openSpaces[latestCol]-1));
-
-            int row = (openSpaces[latestCol-1])+val;
-            int col = latestCol + val;
-
-            for(int i=col; (i>=0) && (row>=0); i--) {
-                /* TODO: Error when you click the furthest left column */
-                if(board[row][i] == currentTurn) {
-                    numInARow++;
-                    System.out.println("current score: " + numInARow);
-                    if(numInARow >= 4) {
-                        winner = true;
+                //checks for a secondary diagonal(upper right to lower left)
+                if (r >= In_a_Row - 1 && c <= numCols - In_a_Row) {//checks if win check is necessary or lead to a array out of bounds error
+                    p1Count = 0;
+                    p2Count = 0;
+                    //this loop checks each location for a win condition in every position
+                    for (int i = 0; i < In_a_Row; i++) {
+                        if (board[r - i][c + i] == BoardState.P1)
+                            p1Count++;
+                        if (board[r - i][c + i] == BoardState.P2)
+                            p2Count++;
                     }
-                } else {
-                    numInARow = 0;
+
+                    if (p1Count == In_a_Row)
+                        return winState.P1Win;
+                    else if (p2Count == In_a_Row)
+                        return winState.P2Win;
                 }
-                row--;
+                //checks for a primary diagonal win(upper left to lower right)
+                if (r <= numRows - In_a_Row && c <= numCols - In_a_Row) {
+                    p1Count = 0;
+                    p2Count = 0;
+
+                    for (int i = 0; i < In_a_Row; i++) {
+                        if (board[r + i][c + i] == BoardState.P1)
+                            p1Count++;
+                        if (board[r + i][c + i] == BoardState.P2)
+                            p2Count++;
+                    }
+
+                    if (p1Count == In_a_Row)
+                        return winState.P1Win;
+                    else if (p2Count == In_a_Row)
+                        return winState.P2Win;
+                }
             }
-        }
-    
-        if(winner == true) {
-            if(playerTurn == Turn.P1Turn) {
-                winState = WinState.P1Win;
-                System.out.println("Player 1 wins!");
-            } else if(playerTurn == Turn.P2Turn) {
-                winState = WinState.P2Win;
-                System.out.println("Player 2 wins!");
-            } else {
-                System.out.println("Someone won, but we don't know who!");
-            }
-        } else if(numPlaced == 42) {
-            winState = WinState.TIE;
-            System.out.println("It's a tie!");
-        }
-        return winState;
+
+        return winState.NOWINNER;
     }
 }
 
