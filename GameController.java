@@ -98,7 +98,7 @@ public class GameController extends JPanel {
                         } else {
                             board[i][j].setText("P2");
                         }
-                        WinState winState = model.checkWinCondition(j);
+                        WinState winState = model.checkWinCondition();
                         if(winState == winState.TIE) {
                             System.out.println("Controller says TIE!");
                         } else if(winState == winState.P1Win) {
