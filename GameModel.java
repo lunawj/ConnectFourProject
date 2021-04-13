@@ -81,7 +81,6 @@ public class GameModel{
         for(int i=0; i<numRows; i++) {
             if(board[i][latestCol] == currentTurn) {
                 numInARow++;
-                System.out.println("current score: " + numInARow);
                 if(numInARow >= 4) {
                     winner = true;
                 }
@@ -95,7 +94,6 @@ public class GameModel{
             for(int j=0; j<numCols; j++) {
                 if(board[openSpaces[latestCol]-1][j] == currentTurn) {
                     numInARow++;
-                    System.out.println("current score: " + numInARow);
                     if(numInARow >= 4) {
                         winner = true;
                     }
@@ -107,7 +105,52 @@ public class GameModel{
 
         /* Check upper left to lower right diagonal */
         if(winner != true) {
+            /* in order to get the most left/up, we check to see how
+               far we can go in both direction. the min is the val we
+               will go. */
+            int val = (latestCol < (numRows - (openSpaces[latestCol]-1)))
+                       ? latestCol : (numRows - (openSpaces[latestCol]-1));
             
+            int row = (openSpaces[latestCol]-1)+val;
+            int col = latestCol - val;
+
+            for(int i=col; (i<numCols) && (row >= 0); i++) {
+                /* TODO: ERROR ON LINE 119 when you click the furthest right column */
+                if(board[row][i] == currentTurn) {
+                    numInARow++;
+                    System.out.println("current score: " + numInARow);
+                    if(numInARow >= 4) {
+                        winner = true;
+                    }
+                } else {
+                    numInARow = 0;
+                }
+                row--;
+            }
+        }
+
+        /* TODO: Out of Bounds errors here... I have to get to class though
+           and don't have time to investigate now */
+        if(winner != true) {
+            int val = ((numCols - latestCol) < (numRows - (openSpaces[latestCol]-1))) ?
+                      (numCols - latestCol) : (numRows - (openSpaces[latestCol]-1));
+
+            int row = (openSpaces[latestCol-1])+val;
+            int col = latestCol + val;
+
+            for(int i=col; (i>=0) && (row>=0); i--) {
+                /* TODO: Error when you click the furthest left column */
+                if(board[row][i] == currentTurn) {
+                    numInARow++;
+                    System.out.println("current score: " + numInARow);
+                    if(numInARow >= 4) {
+                        winner = true;
+                    }
+                } else {
+                    numInARow = 0;
+                }
+                row--;
+            }
         }
     
         if(winner == true) {
