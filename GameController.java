@@ -95,8 +95,14 @@ public class GameController extends JPanel {
                     if(valid) {
                         if(playerTurn == Turn.P1Turn) {
                             board[i][j].setText("P1");
+                            board[i][j].setBackground(Color.BLUE);
+                            board[i][j].setOpaque(true);
+                            board[i][j].setFont(new Font("Dialog", Font.BOLD, 12));
                         } else {
                             board[i][j].setText("P2");
+                            board[i][j].setBackground(Color.red);
+                            board[i][j].setOpaque(true);
+                            board[i][j].setFont(new Font("Dialog", Font.BOLD, 12));
                         }
                         WinState winState = model.checkWinCondition();
                         if(winState == winState.TIE) {
