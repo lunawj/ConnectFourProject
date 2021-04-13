@@ -62,7 +62,10 @@ public class GameController extends JPanel {
             for(int j=0; j<7; j++) {
                 if(i <6) {
                     board[i][j] = new JButton("EMPTY");
+                    board[i][j].setBackground(Color.lightGray);
+                    board[i][j].setOpaque(true);
                     board[i][j].setEnabled(false);
+                    board[i][j].setFont(new Font("Dialog", Font.PLAIN, 12));
                     panelArray[1].add(board[i][j]);
                 }
                 else {
