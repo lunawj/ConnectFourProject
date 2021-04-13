@@ -99,13 +99,13 @@ public class GameController extends JPanel {
                             board[i][j].setText("P2");
                         }
                         WinState winState = model.checkWinCondition(j);
-                        /*if(winState == winState.TIE) {
+                        if(winState == winState.TIE) {
                             System.out.println("Controller says TIE!");
                         } else if(winState == winState.P1Win) {
                             System.out.println("Controller says P1 WINS!");
                         } else if(winState == winState.P2Win) {
                             System.out.println("Controller says P2 WINS!");
-                        } else*/ {
+                        } else {
                             if(playerTurn == Turn.P1Turn)
                                 playerTurn = Turn.P2Turn;
                             else
