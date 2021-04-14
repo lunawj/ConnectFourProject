@@ -1,68 +1,108 @@
+/************************************************************************
+ * This program creates the logic of the game: Cuatro that is based off
+ * the iconic board game, Connect Four. The program interacts with a GUI
+ * and connects two clients and puts them in their own server thread.
+ ************************************************************************/
 public class GameModel{
+
+    /** these are the states that a square of the board can hold  */
     enum BoardState {
         EMPTY,
         P1,
         P2
     }
 
+    /** This is the number of rows in the game */
     private static final int numRows = 6;
+
+    /** This is the number of columns in the game */
     private static final int numCols = 7;
+
+    /** This is the number of connections a player needs to win the game */
     private static final int In_a_Row = 4;
 
-    private int numPlaced;
+    /** This is the double array that holds the board */
     private BoardState[][] board;
-    private int[] openSpaces;
+
+    /** This is the array that holds how many spaces are taken in each column */
+    private int[] takenSpaces;
+
+    /** This tells the program who's turn it is */
     private Turn playerTurn;
+
+    /** This tells the program the current win state */
     private WinState winState;
 
+    /************************************************************************
+     * This is the basic constructor. It sets the board to it's
+     * default settings
+     ************************************************************************/
     public GameModel() {
-        numPlaced = 0;
         board = new BoardState[numRows][numCols];
-        openSpaces = new int[numCols];
+        takenSpaces = new int[numCols];
         playerTurn = Turn.P1Turn;
         winState = WinState.NOWINNER;
 
         for(int i=(numRows-1); i>=0; i--) {
             for(int j=(numCols-1); j>=0; j--) {
                 board[i][j] = BoardState.EMPTY;
-                openSpaces[j] = 0;
+                takenSpaces[j] = 0;
             }
         }
     }
 
+    /************************************************************************
+     * This function sets the player's turn to the input.
+     * @param turn is the what the variable 'PlayerTurn' will be set to
+     ************************************************************************/
     public void setPlayerTurn(Turn turn) {
         playerTurn = turn;
     }
 
-    public int getOpenSpaces(int col) {
-        return openSpaces[col];
+    /************************************************************************
+     * This function returns the number of open spaces in a given column
+     * @param col is the column wanted
+     * @return the number of open spaces taken in the given column
+     ************************************************************************/
+    public int getTakenSpaces(int col) {
+        return takenSpaces[col];
     }
 
+    /************************************************************************
+     * This function tries to place a chip in a column. If a column is full,
+     * it will let the user know
+     * @param col holds the column that the user is trying to drop their chip in
+     * @return if the chip has been placed in a valid space or not
+     ************************************************************************/
     public boolean placeChip(int col) {
         boolean retval = false;
-        if(openSpaces[col] == numRows) {
+        if(takenSpaces[col] == numRows) {
             System.out.println("Invalid move");
         }
         else {
-            if(board[openSpaces[col]][col] == BoardState.EMPTY) {
+            if(board[takenSpaces[col]][col] == BoardState.EMPTY) {
                 if(playerTurn == Turn.P1Turn) {
-                    board[openSpaces[col]][col] = BoardState.P1;
+                    board[takenSpaces[col]][col] = BoardState.P1;
                 } else {
-                    board[openSpaces[col]][col] = BoardState.P2;
+                    board[takenSpaces[col]][col] = BoardState.P2;
                 }
-                openSpaces[col]++;
+                takenSpaces[col]++;
                 retval = true;
             }
         }
-        
+
         return retval;
     }
 
+    /************************************************************************
+     * This function checks if a winner exists on the board currently
+     * @return the win state of the board(P1WIn, P2Win, TIE, NOWINNER)
+     ************************************************************************/
     public WinState checkWinCondition() {
         //check if all spaces are taken
         int tie_count = 0;
         for (int i = 0; i < numCols; i++) {
-            if (getOpenSpaces(i) == numRows)
+            if (getTakenSpaces(i) == numRows)
                 tie_count++;//checks if each column is full
         }
         if (tie_count == numCols)
@@ -147,4 +187,3 @@ public class GameModel{
         return winState.NOWINNER;
     }
 }
-
