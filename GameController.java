@@ -9,19 +9,28 @@ import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
 /**********************************************************************
- * Controller class for the ConnectFour game. 
+ * Controller class for the ConnectFour game. This class manages the
+ * GUI that is used for each client in the application
  *********************************************************************/
 public class GameController extends JPanel {
+    
     /** The board that contains the connect 4 pieces */
     private JButton[][] board;
-    /** The label saying whos turn it is */
+
+    /** The label saying who's turn it is */
     private JLabel whosTurn;
 
+    /** The local GameModel that calls the GameModel class */
     private GameModel model = new GameModel();
 
+    /** This holds the value of who's turn it is. */
     Turn playerTurn;
 
-    /** Constructor for GameController handles the starting of the game */
+    /************************************************************************
+     * This is the basic constructor. It sets the board to a empty board,
+     * always having player 1 go first. It sets up the GUI so that the players
+     * can interact with each other
+     ************************************************************************/
     public GameController() {
         ButtonListener listener = new ButtonListener();
         playerTurn = Turn.P1Turn;
