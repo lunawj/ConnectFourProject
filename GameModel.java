@@ -55,12 +55,6 @@ public class GameModel{
             }
         }
         
-        for(int i=numRows-1; i>=0; i--) {
-            for(int j=numCols-1; j>=0; j--) {
-                System.out.print(board[i][j] + "\t");
-            }
-            System.out.println();
-        }
         return retval;
     }
 

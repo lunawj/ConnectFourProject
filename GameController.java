@@ -53,7 +53,7 @@ public class GameController extends JPanel {
         panelArray[1].setLayout(new GridLayout(7,7));
 
         /* create the turn label, and add it to the first panel */
-        whosTurn = new JLabel("Who's Turn?");
+        whosTurn = new JLabel("Player 1's Turn");
         panelArray[0].add(whosTurn);
 
         /* Create the board and buttons for each column */
@@ -121,10 +121,13 @@ public class GameController extends JPanel {
                             JOptionPane.showMessageDialog(null, "Player 2 has won",
                                     "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
                         } else {
-                            if(playerTurn == Turn.P1Turn)
+                            if(playerTurn == Turn.P1Turn) {
                                 playerTurn = Turn.P2Turn;
-                            else
+                                whosTurn.setText("Player 2's Turn");
+                            } else {
                                 playerTurn = Turn.P1Turn;
+                                whosTurn.setText("Player 1's Turn");
+                            }
                             model.setPlayerTurn(playerTurn);
                         }
                     }
