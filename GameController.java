@@ -92,7 +92,7 @@ public class GameController extends JPanel {
                 if(board[6][j] == e.getSource()) {
 
                     /* Get the next open space in the picked row */
-                    int i = 5-model.getOpenSpaces(j);
+                    int i = 5-model.getTakenSpaces(j);
                     /* Do the move, and make sure its valid before we do anything else */
                     boolean valid = model.placeChip(j);
                     if(valid) {
