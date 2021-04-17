@@ -24,19 +24,30 @@ public class GameController extends JPanel {
     private GameModel model = new GameModel();
 
     /** This holds the value of who's turn it is. */
-    Turn playerTurn;
+    private Turn playerTurn;
+
+    /** This holds the column of the most recently placed chip. */
+    private int lastMove;
+
+    /** This boolean indicates whether a move has been read by the game client. */
+    private volatile boolean newMove;
+
+    /** This indicates whether the player of this game is P1 or P2. */
+    private int activePlayer;
 
     /************************************************************************
      * This is the basic constructor. It sets the board to a empty board,
      * always having player 1 go first. It sets up the GUI so that the players
      * can interact with each other
      ************************************************************************/
-    public GameController() {
+    public GameController(int player) {
         ButtonListener listener = new ButtonListener();
         playerTurn = Turn.P1Turn;
         model.setPlayerTurn(playerTurn);
+        newMove = false;
+        activePlayer = player;
 
-        /** panel is the overarching panel eveything is added to */
+        /* panel is the overarching panel eveything is added to */
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         
@@ -88,6 +99,102 @@ public class GameController extends JPanel {
         add(panel);
     }
 
+    /************************************************************************
+     * This function returns the current turn as an integer value.
+     ************************************************************************/
+    public int getCurrentTurn() {
+        if(playerTurn == Turn.P1Turn)
+            return 1;
+        else
+            return 2;
+    }
+    /************************************************************************
+     * This function returns the value of the most recent move.
+     ************************************************************************/
+    public int getMove() { return lastMove; }
+
+    /************************************************************************
+     * This function returns the value of the new move flag.
+     ************************************************************************/
+    public boolean newMove() { return newMove; }
+
+    /************************************************************************
+     * This function relinquishes the current turn to the other player.
+     ************************************************************************/
+    public void switchTurn(int player) {
+        if(player == 1)
+            playerTurn = Turn.P2Turn;
+        else
+            playerTurn = Turn.P1Turn;
+        model.setPlayerTurn(playerTurn);
+    }
+
+    /************************************************************************
+     * This function checks whether it is currently the active player's turn.
+     ************************************************************************/
+    public boolean myTurn() {
+        if(playerTurn == Turn.P1Turn && activePlayer == 1)
+            return true;
+        else if(playerTurn == Turn.P2Turn && activePlayer == 2)
+            return true;
+        else
+            return false;
+    }
+
+    /************************************************************************
+     * This function clears the new move flag when the move is read by the
+     * game client.
+     ************************************************************************/
+    public void clearNewMove() { newMove = false; }
+
+    public boolean setChipFromServer(int col) {
+        boolean result = false;
+
+        /* Get the next open space in the picked row */
+        int row = 5-model.getTakenSpaces(col);
+        /* Do the move, and make sure its valid before we do anything else */
+        boolean valid = model.placeChip(col);
+        if(valid) {
+            if(playerTurn == Turn.P1Turn) {
+                board[row][col].setText("P1");
+                board[row][col].setBackground(Color.BLUE);
+                board[row][col].setOpaque(true);
+                board[row][col].setFont(new Font("Dialog", Font.BOLD, 12));
+            } else {
+                board[row][col].setText("P2");
+                board[row][col].setBackground(Color.red);
+                board[row][col].setOpaque(true);
+                board[row][col].setFont(new Font("Dialog", Font.BOLD, 12));
+            }
+            WinState winState = model.checkWinCondition();
+            if(winState == winState.TIE) {
+                System.out.println("Controller says TIE!");
+                JOptionPane.showMessageDialog(null, "The game has ended in a tie",
+                        "No moves remaining!", JOptionPane.INFORMATION_MESSAGE);
+            } else if(winState == winState.P1Win) {
+                System.out.println("Controller says P1 WINS!");
+                JOptionPane.showMessageDialog(null, "Player 1 has won",
+                        "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
+            } else if(winState == winState.P2Win) {
+                System.out.println("Controller says P2 WINS!");
+                JOptionPane.showMessageDialog(null, "Player 2 has won",
+                        "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                if(playerTurn == Turn.P1Turn) {
+                    playerTurn = Turn.P2Turn;
+                    whosTurn.setText("Player 2's Turn");
+                } else {
+                    playerTurn = Turn.P1Turn;
+                    whosTurn.setText("Player 1's Turn");
+                }
+                model.setPlayerTurn(playerTurn);
+            }
+            result = true;
+        }
+        return result;
+    }
+
+
 
 /**********************************************************************
  * The button listener class is used to determine when the player
@@ -96,26 +203,27 @@ public class GameController extends JPanel {
  *********************************************************************/
     private class ButtonListener implements ActionListener {
         public void actionPerformed(final ActionEvent e) {
-        
+            boolean valid = false;
             for(int j=0; j<7; j++) {
                 if(board[6][j] == e.getSource()) {
 
                     /* Get the next open space in the picked row */
                     int i = 5-model.getTakenSpaces(j);
                     /* Do the move, and make sure its valid before we do anything else */
-                    boolean valid = model.placeChip(j);
+                    if(myTurn())
+                        valid = model.placeChip(j);
                     if(valid) {
+                        lastMove = j;
+                        newMove = true;
                         if(playerTurn == Turn.P1Turn) {
                             board[i][j].setText("P1");
                             board[i][j].setBackground(Color.BLUE);
-                            board[i][j].setOpaque(true);
-                            board[i][j].setFont(new Font("Dialog", Font.BOLD, 12));
                         } else {
                             board[i][j].setText("P2");
                             board[i][j].setBackground(Color.red);
-                            board[i][j].setOpaque(true);
-                            board[i][j].setFont(new Font("Dialog", Font.BOLD, 12));
                         }
+                        board[i][j].setOpaque(true);
+                        board[i][j].setFont(new Font("Dialog", Font.BOLD, 12));
                         WinState winState = model.checkWinCondition();
                         if(winState == winState.TIE) {
                             System.out.println("Controller says TIE!");
@@ -131,13 +239,12 @@ public class GameController extends JPanel {
                                     "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             if(playerTurn == Turn.P1Turn) {
-                                playerTurn = Turn.P2Turn;
+                                //playerTurn = Turn.P2Turn;
                                 whosTurn.setText("Player 2's Turn");
                             } else {
-                                playerTurn = Turn.P1Turn;
+                                //playerTurn = Turn.P1Turn;
                                 whosTurn.setText("Player 1's Turn");
                             }
-                            model.setPlayerTurn(playerTurn);
                         }
                     }
                 }
