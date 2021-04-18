@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class GameView {
     /* Main method for client side. Sets up GUI for the 
@@ -7,10 +9,22 @@ public class GameView {
     //public static void main(final String[] args) {
     public GameController controller;
 
+    public boolean windowClosed;
+
+    public boolean windowClosed() { return windowClosed; }
+
+
     public GameView(int player) {
         /* Create the JFrame, make it exit when close is pressed */
+        windowClosed = false;
         JFrame frame = new JFrame("ConnectFour!");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                windowClosed = true;
+            }
+        });
         controller = new GameController(player);
 
         /* Add controller to JFrame created for program */

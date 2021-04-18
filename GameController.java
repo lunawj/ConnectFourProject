@@ -33,7 +33,10 @@ public class GameController extends JPanel {
     private volatile boolean newMove;
 
     /** This indicates whether the player of this game is P1 or P2. */
-    private int activePlayer;
+    private final int activePlayer;
+
+    /** This boolean indicates whether a move has been read by the game client. */
+    private volatile boolean gameFinished;
 
     /************************************************************************
      * This is the basic constructor. It sets the board to a empty board,
@@ -46,6 +49,7 @@ public class GameController extends JPanel {
         model.setPlayerTurn(playerTurn);
         newMove = false;
         activePlayer = player;
+        gameFinished = false;
 
         /* panel is the overarching panel eveything is added to */
         JPanel panel = new JPanel();
@@ -114,6 +118,11 @@ public class GameController extends JPanel {
     public int getMove() { return lastMove; }
 
     /************************************************************************
+     * This function returns the value of the most recent move.
+     ************************************************************************/
+    public boolean gameFinished() { return gameFinished; }
+
+    /************************************************************************
      * This function returns the value of the new move flag.
      ************************************************************************/
     public boolean newMove() { return newMove; }
@@ -122,10 +131,14 @@ public class GameController extends JPanel {
      * This function relinquishes the current turn to the other player.
      ************************************************************************/
     public void switchTurn(int player) {
-        if(player == 1)
+        if(player == 1) {
             playerTurn = Turn.P2Turn;
-        else
+            whosTurn.setText("Player 2's Turn");
+        }
+        else {
             playerTurn = Turn.P1Turn;
+            whosTurn.setText("Player 1's Turn");
+        }
         model.setPlayerTurn(playerTurn);
     }
 
@@ -171,14 +184,17 @@ public class GameController extends JPanel {
                 System.out.println("Controller says TIE!");
                 JOptionPane.showMessageDialog(null, "The game has ended in a tie",
                         "No moves remaining!", JOptionPane.INFORMATION_MESSAGE);
+                gameFinished = true;
             } else if(winState == winState.P1Win) {
                 System.out.println("Controller says P1 WINS!");
                 JOptionPane.showMessageDialog(null, "Player 1 has won",
                         "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
+                gameFinished = true;
             } else if(winState == winState.P2Win) {
                 System.out.println("Controller says P2 WINS!");
                 JOptionPane.showMessageDialog(null, "Player 2 has won",
                         "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
+                gameFinished = true;
             } else {
                 if(playerTurn == Turn.P1Turn) {
                     playerTurn = Turn.P2Turn;
@@ -229,22 +245,18 @@ public class GameController extends JPanel {
                             System.out.println("Controller says TIE!");
                             JOptionPane.showMessageDialog(null, "The game has ended in a tie",
                                     "No moves remaining!", JOptionPane.INFORMATION_MESSAGE);
+                            gameFinished = true;
+
                         } else if(winState == winState.P1Win) {
                             System.out.println("Controller says P1 WINS!");
                             JOptionPane.showMessageDialog(null, "Player 1 has won",
                                     "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
+                            gameFinished = true;
                         } else if(winState == winState.P2Win) {
                             System.out.println("Controller says P2 WINS!");
                             JOptionPane.showMessageDialog(null, "Player 2 has won",
                                     "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
-                        } else {
-                            if(playerTurn == Turn.P1Turn) {
-                                //playerTurn = Turn.P2Turn;
-                                whosTurn.setText("Player 2's Turn");
-                            } else {
-                                //playerTurn = Turn.P1Turn;
-                                whosTurn.setText("Player 1's Turn");
-                            }
+                            gameFinished = true;
                         }
                     }
                 }

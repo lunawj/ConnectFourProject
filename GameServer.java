@@ -16,6 +16,7 @@ public class GameServer extends Thread {
         DataInputStream inFromClient2 = null;
         DataOutputStream  outToClient1 = null;
         DataOutputStream  outToClient2 = null;
+        boolean activeGame = true;
 
         /* setup the input and output streams to/from clients, and read from clients */
         try {
@@ -37,11 +38,14 @@ public class GameServer extends Thread {
             e.printStackTrace();
         }
 
-        while(true) {
+        while(activeGame) {
             try {
                 player1Move = inFromClient1.readUTF();
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+            if(player1Move.equals("Quit")) {
+                break;
             }
             try {
                 outToClient2.writeUTF(player1Move);
@@ -53,12 +57,24 @@ public class GameServer extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if(player2Move.equals("Quit")) {
+                break;
+            }
             try {
                 outToClient1.writeUTF(player2Move);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
+        try {
+            socket1.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            socket2.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

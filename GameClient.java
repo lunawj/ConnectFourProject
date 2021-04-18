@@ -36,10 +36,25 @@ public class GameClient {
             }
             else if (game.controller.getCurrentTurn() != player){
                 System.out.println("Waiting for other player to move");
-                gameInfo = inFromServer.readUTF();
+                try {
+                    gameInfo = inFromServer.readUTF();
+                } catch (IOException e) {   // end client on IO exception
+                    break;
+                }
+                // handle condition when other player exits game
+                if(gameInfo.equals("Quit")) {
+                    break;
+                }
                 game.controller.setChipFromServer(Integer.parseInt(gameInfo));
             }
+            if(game.controller.gameFinished() || game.windowClosed()) {
+                activeGame = false;
+            }
         }
+        outToServer.writeUTF("Quit");
+        gameSocket.close();
+        System.out.println("Player has closed the game");
+        System.exit(0);
     }
 
 }
