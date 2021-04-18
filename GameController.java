@@ -85,6 +85,8 @@ public class GameController extends JPanel {
         for(int i=0; i<7; i++) {
             for(int j=0; j<7; j++) {
                 if(i <6) {
+                    /* The first 6 rows make up the connect 4 board, and 
+                       cannot be interacted with */
                     board[i][j] = new JButton("EMPTY");
                     board[i][j].setBackground(Color.lightGray);
                     board[i][j].setOpaque(true);
@@ -92,6 +94,7 @@ public class GameController extends JPanel {
                     board[i][j].setFont(new Font("Dialog", Font.PLAIN, 12));
                     panelArray[1].add(board[i][j]);
                 }
+                /* The bottom row makes up the buttons, these can be interacted with */
                 else {
                     board[i][j] = new JButton("PICK ME!");
                     panelArray[1].add(board[i][j]);
@@ -160,6 +163,10 @@ public class GameController extends JPanel {
      ************************************************************************/
     public void clearNewMove() { newMove = false; }
 
+    /***********************************************************************
+     * This function has the same workflow as the ButtonListener, but sets
+     * the move that the opposing player made in our game.
+     ***********************************************************************/
     public boolean setChipFromServer(int col) {
         boolean result = false;
 
@@ -168,33 +175,40 @@ public class GameController extends JPanel {
         /* Do the move, and make sure its valid before we do anything else */
         boolean valid = model.placeChip(col);
         if(valid) {
+            /* If it's P1 turn, update the piece accordingly */
             if(playerTurn == Turn.P1Turn) {
                 board[row][col].setText("P1");
                 board[row][col].setBackground(Color.BLUE);
                 board[row][col].setOpaque(true);
                 board[row][col].setFont(new Font("Dialog", Font.BOLD, 12));
+            /* If it's P2 turn, update the piece accordingly */
             } else {
                 board[row][col].setText("P2");
                 board[row][col].setBackground(Color.red);
                 board[row][col].setOpaque(true);
                 board[row][col].setFont(new Font("Dialog", Font.BOLD, 12));
             }
+            /* Now we check winstate */
             WinState winState = model.checkWinCondition();
             if(winState == winState.TIE) {
+                /* Let the user know if the game ended in a tie */
                 System.out.println("Controller says TIE!");
                 JOptionPane.showMessageDialog(null, "The game has ended in a tie",
                         "No moves remaining!", JOptionPane.INFORMATION_MESSAGE);
                 gameFinished = true;
             } else if(winState == winState.P1Win) {
+                /* Let the user know if P1 won */
                 System.out.println("Controller says P1 WINS!");
                 JOptionPane.showMessageDialog(null, "Player 1 has won",
                         "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
                 gameFinished = true;
             } else if(winState == winState.P2Win) {
+                /* Let the user know if P2 won */
                 System.out.println("Controller says P2 WINS!");
                 JOptionPane.showMessageDialog(null, "Player 2 has won",
                         "4 in a Row Found!", JOptionPane.INFORMATION_MESSAGE);
                 gameFinished = true;
+            /* If no one has won, then we should set it to the next players turn */
             } else {
                 if(playerTurn == Turn.P1Turn) {
                     playerTurn = Turn.P2Turn;
@@ -229,8 +243,10 @@ public class GameController extends JPanel {
                     if(myTurn())
                         valid = model.placeChip(j);
                     if(valid) {
+                        /* We set lastMove to the column to communicate to the server where we played */
                         lastMove = j;
                         newMove = true;
+                        /* set space color and text accordingly */
                         if(playerTurn == Turn.P1Turn) {
                             board[i][j].setText("P1");
                             board[i][j].setBackground(Color.BLUE);
@@ -240,6 +256,7 @@ public class GameController extends JPanel {
                         }
                         board[i][j].setOpaque(true);
                         board[i][j].setFont(new Font("Dialog", Font.BOLD, 12));
+                        /* Now we check win condition! - if someone won, we set gameFinished = true */
                         WinState winState = model.checkWinCondition();
                         if(winState == winState.TIE) {
                             System.out.println("Controller says TIE!");

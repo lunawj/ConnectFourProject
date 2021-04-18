@@ -76,16 +76,19 @@ public class GameModel{
      ************************************************************************/
     public boolean placeChip(int col) {
         boolean retval = false;
+        /* Can't play in a column that doesn't have open spaces */
         if(takenSpaces[col] == numRows) {
             System.out.println("Invalid move");
         }
         else {
+            /* Set the spot to belong to the player who played */
             if(board[takenSpaces[col]][col] == BoardState.EMPTY) {
                 if(playerTurn == Turn.P1Turn) {
                     board[takenSpaces[col]][col] = BoardState.P1;
                 } else {
                     board[takenSpaces[col]][col] = BoardState.P2;
                 }
+                /* make sure we increment the count of spaces played in this column */
                 takenSpaces[col]++;
                 retval = true;
             }
@@ -183,7 +186,7 @@ public class GameModel{
                         return winState.P2Win;
                 }
             }
-
+        /* If we get here... no winners! */
         return winState.NOWINNER;
     }
 }

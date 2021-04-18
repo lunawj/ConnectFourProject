@@ -3,12 +3,13 @@ import java.io.*;
 import java.lang.*;
 
 public class GameServerMulti {
-
+    /* Handles multi-threading the server */
     public static void main(String[] args) throws IOException {
         ServerSocket server = null;
         GameServer game;
         Socket p1, p2;
         int port = Integer.parseInt(args[0]);
+        /* Create our serverSocket at the specified port */
         try {
             server = new ServerSocket(port);
         } catch (IOException e) {
@@ -23,6 +24,7 @@ public class GameServerMulti {
             p2 = server.accept();
             System.out.println("Player 2 connected " + p2.getInetAddress());
             System.out.println("New game has begun. Good luck!");
+            /* Create GameServer instance and spawn it in it's own thread */
             game = new GameServer(p1, p2);
             Thread t = new Thread(game);
             t.start();
