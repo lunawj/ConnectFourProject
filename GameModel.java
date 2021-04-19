@@ -1,8 +1,12 @@
-/************************************************************************
- * This program creates the logic of the game: Cuatro that is based off
- * the iconic board game, Connect Four. The program interacts with a GUI
- * and connects two clients and puts them in their own server thread.
- ************************************************************************/
+/*************************************************************************
+ * Course: CIS457-10
+ * File:   Semester Project
+ * Name:   Charlie Dorn, Kendra Haan, Wesley Luna, Justin Von Kulajta Winn
+ * Date:   4/19/2021
+ *
+ * Description: The model for the Connect4 game. This class controls the
+ * game board state and checks the win condition.
+ **************************************************************************/
 public class GameModel{
 
     /** these are the states that a square of the board can hold  */

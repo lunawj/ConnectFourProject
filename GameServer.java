@@ -1,3 +1,12 @@
+/*************************************************************************
+ * Course: CIS457-10
+ * File:   Semester Project
+ * Name:   Charlie Dorn, Kendra Haan, Wesley Luna, Justin Von Kulajta Winn
+ * Date:   4/19/2021
+ *
+ * Description: The game server class for the Connect4 game. Facilitates
+ * the connection between two game clients, player 1 and player 2.
+ **************************************************************************/
 import java.net.Socket;
 import java.io.*;
 

@@ -1,3 +1,12 @@
+/*************************************************************************
+ * Course: CIS457-10
+ * File:   Semester Project
+ * Name:   Charlie Dorn, Kendra Haan, Wesley Luna, Justin Von Kulajta Winn
+ * Date:   4/19/2021
+ *
+ * Description: Controller class for the ConnectFour game. This class manages
+ * the GUI that is used for each client in the application
+ **************************************************************************/
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -8,10 +17,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
-/**********************************************************************
- * Controller class for the ConnectFour game. This class manages the
- * GUI that is used for each client in the application
- *********************************************************************/
 public class GameController extends JPanel {
     
     /** The board that contains the connect 4 pieces */

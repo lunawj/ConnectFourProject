@@ -1,3 +1,13 @@
+/*************************************************************************
+ * Course: CIS457-10
+ * File:   Semester Project
+ * Name:   Charlie Dorn, Kendra Haan, Wesley Luna, Justin Von Kulajta Winn
+ * Date:   4/19/2021
+ *
+ * Description: The game client for the Connect4 game. Initializes the game
+ * view, sends player moves to the sever and reads opponent moves from the
+ * server.
+ **************************************************************************/
 import java.net.*;
 import java.io.*;
 import java.lang.*;

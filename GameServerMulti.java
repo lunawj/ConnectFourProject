@@ -1,3 +1,13 @@
+/*************************************************************************
+ * Course: CIS457-10
+ * File:   Semester Project
+ * Name:   Charlie Dorn, Kendra Haan, Wesley Luna, Justin Von Kulajta Winn
+ * Date:   4/19/2021
+ *
+ * Description: The multithreaded server class for the Connect4 game.
+ * Allows clients to connect to the game server and spawns a new server
+ * thread to facilitate game play.
+ **************************************************************************/
 import java.net.*;
 import java.io.*;
 import java.lang.*;
